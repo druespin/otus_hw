@@ -2,7 +2,7 @@ package ru.otus;
 
 import com.google.common.collect.Comparators;
 
-public class App {
+public class HelloOtus {
 
     public static void main(String[]args){
 
