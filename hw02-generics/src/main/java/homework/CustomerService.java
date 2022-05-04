@@ -13,19 +13,15 @@ public class CustomerService {
     public Map.Entry<Customer, String> getSmallest() {
         //Возможно, чтобы реализовать этот метод, потребуется посмотреть как Map.Entry сделан в jdk
         Customer leastKey = mutableMap.firstKey();
-        return leastKey == null ? null : Map.entry(leastKey.getCopy(), immutableCopy().get(leastKey));
+        return leastKey == null ? null : Map.entry(leastKey.getCopy(), mutableMap.get(leastKey));
     }
 
     public Map.Entry<Customer, String> getNext(Customer customer) {
         Customer nextKey = mutableMap.higherKey(customer);
-        return nextKey == null ? null : Map.entry(nextKey.getCopy(), immutableCopy().get(nextKey));
+        return nextKey == null ? null : Map.entry(nextKey.getCopy(), mutableMap.get(nextKey));
     }
 
     public void add(Customer customer, String data) {
         mutableMap.put(customer, data);
-    }
-
-    private Map<Customer, String> immutableCopy() {
-        return Map.copyOf(mutableMap);
     }
 }
