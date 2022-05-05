@@ -13,9 +13,12 @@ public class AnnotationTest1 {
     }
 
     @Test
-    public void test() {
-        System.out.print("\nTest in progress...");
+    public void test1() {
+        System.out.print("\nTest-1 in progress...");
     }
+
+    @Test
+    public void test2() { System.out.print("\nTest-2 in progress..."); }
 
     @After
     public void tearDown() throws ClassNotFoundException{

@@ -14,9 +14,20 @@ public class AnnotationTest2 {
     }
 
     @Test
-    public void test() throws ExecutionException {
-        System.out.print("\nTest in progress...");
-        throw new ExecutionException(new Throwable());
+    public void test1() throws RuntimeException {
+        System.out.print("\nTest-1 in progress...");
+        throw new RuntimeException();
+    }
+
+    @Test
+    public void test2() {
+        System.out.print("\nTest-2 in progress...");
+    }
+
+    @Test
+    public void test3() throws NullPointerException {
+        System.out.print("\nTest-3 in progress...");
+        throw new NullPointerException();
     }
 
     @After

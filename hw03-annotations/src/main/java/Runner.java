@@ -19,32 +19,33 @@ public class Runner {
     public void runTestClass() {
         StringBuilder exceptions = new StringBuilder();
 
-        int passed = isMethodPassed(testInstance, Before.class, exceptions) +
-                    isMethodPassed(testInstance, Test.class, exceptions) +
-                    isMethodPassed(testInstance, After.class, exceptions);
+        int passed = invokeMethodByAnnotationAndGetPassedAmount(testInstance, Before.class, exceptions) +
+                invokeMethodByAnnotationAndGetPassedAmount(testInstance, Test.class, exceptions) +
+                invokeMethodByAnnotationAndGetPassedAmount(testInstance, After.class, exceptions);
 
         int total = testClass.getDeclaredMethods().length;
         int failed = total - passed;
 
         printStats(total, passed, failed, exceptions.toString());
-
     }
 
-    private static int isMethodPassed(Object test, Class<? extends Annotation> annotation, StringBuilder exception) {
-        try {
-            for (Method method : test.getClass().getDeclaredMethods()) {
-                if (method.isAnnotationPresent(annotation)) {
+    private static int invokeMethodByAnnotationAndGetPassedAmount(Object test, Class<? extends Annotation> annotation,
+                                                                  StringBuilder exception) {
+        int passed = 0;
+        for (Method method : test.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(annotation)) {
+                try {
                     method.invoke(test);
+                    System.out.println("Passed");
+                    passed++;
+                }
+                catch (Exception e) {
+                    System.out.println("Failed");
+                    exception.append(String.format("%s in method %s\n", e.getCause(), method.getName()));
                 }
             }
-            System.out.println("Passed");
-            return 1;
         }
-        catch (Exception e) {
-            System.out.println("Failed");
-            exception.append(String.format("%s in method %s\n", e.getCause(), annotation.getName()));
-            return 0;
-        }
+        return passed;
     }
 
     private static void printStats(int total, int passed, int failed, String exceptions) {
