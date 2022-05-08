@@ -1,10 +1,8 @@
-package testing;
+package test_classes;
 
 import annotations.After;
 import annotations.Before;
 import annotations.Test;
-
-import java.util.concurrent.ExecutionException;
 
 public class AnnotationTest2 {
 

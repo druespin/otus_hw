@@ -1,8 +1,15 @@
+
+import runner.TestRunner;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        new Runner("testing.AnnotationTest1").runTestClass();
-        new Runner("testing.AnnotationTest2").runTestClass();
+        TestRunner testRunner = new TestRunner("test_classes.AnnotationTest2");
+
+        if (testRunner.invokeBeforeMethod()) {
+            testRunner.invokeTestMethodAndGetPassedAmount();
+            testRunner.invokeAfterMethod();
+        }
     }
 }
