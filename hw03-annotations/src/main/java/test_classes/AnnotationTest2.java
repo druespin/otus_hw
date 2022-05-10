@@ -8,7 +8,7 @@ public class AnnotationTest2 {
 
     @Before
     public void setUp() {
-        System.out.print("\nBefore test...");
+        System.out.print("\nBefore test...\n");
     }
 
     @Test
@@ -30,6 +30,6 @@ public class AnnotationTest2 {
 
     @After
     public void tearDown() {
-        System.out.print("\nAfter test...");
+        System.out.print("\nAfter test...\n");
     }
 }

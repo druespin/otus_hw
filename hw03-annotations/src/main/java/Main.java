@@ -5,11 +5,11 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        TestRunner testRunner = new TestRunner("test_classes.AnnotationTest2");
+        Class<?> testClass = Class.forName("test_classes.AnnotationTest2");
 
-        if (testRunner.invokeBeforeMethod()) {
-            testRunner.invokeTestMethodAndGetPassedAmount();
-            testRunner.invokeAfterMethod();
+        if (TestRunner.invokeBeforeMethod(testClass)) {
+            TestRunner.invokeTestMethods(testClass);
         }
+        TestRunner.invokeAfterMethod(testClass);
     }
 }

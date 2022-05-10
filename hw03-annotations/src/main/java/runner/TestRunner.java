@@ -8,19 +8,11 @@ import java.lang.reflect.Method;
 
 public class TestRunner {
 
-    private final Class<?> testClass;
-    private final Object testInstance;
-
-    public TestRunner(String testName) throws Exception {
-        testClass = Class.forName(testName);
-        testInstance = testClass.getConstructor().newInstance();
-    }
-
-    public boolean invokeBeforeMethod() {
+    public static boolean invokeBeforeMethod(Class<?> testClass) {
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Before.class)) {
                 try {
-                    method.invoke(testInstance);
+                    method.invoke(testClass.getConstructor().newInstance());
                 } catch (Exception e) {
                     System.out.println("Failed: " + String.format("%s in method %s\n", e.getCause(), method.getName()));
                     return false;
@@ -30,33 +22,31 @@ public class TestRunner {
         return true;
     }
 
-    public void invokeTestMethodAndGetPassedAmount() {
+    public static void invokeTestMethods(Class<?> testClass) {
         int passed = 0;
         int total = 0;
-        StringBuilder exception = new StringBuilder();
 
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Test.class)) {
                 try {
                     total++;
-                    method.invoke(testInstance);
+                    method.invoke(testClass.getConstructor().newInstance());
                     System.out.println("Passed");
                     passed++;
                 }
                 catch (Exception e) {
-                    System.out.println("Failed");
-                    exception.append(String.format("%s in method %s\n", e.getCause(), method.getName()));
+                    System.out.println("Failed: " + String.format("%s in method %s", e.getCause(), method.getName()));
                 }
             }
         }
-        printStats(total, passed, total - passed, exception.toString());
+        printStats(total, passed);
     }
 
-    public void invokeAfterMethod() {
+    public static void invokeAfterMethod(Class<?> testClass) {
         for (Method method : testClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(After.class)) {
                 try {
-                    method.invoke(testInstance);
+                    method.invoke(testClass.getConstructor().newInstance());
                 } catch (Exception e) {
                     System.out.println("Failed: " + String.format("%s in method %s\n", e.getCause(), method.getName()));
                 }
@@ -64,12 +54,11 @@ public class TestRunner {
         }
     }
 
-    private static void printStats(int total, int passed, int failed, String exceptions) {
+    private static void printStats(int total, int passed) {
         System.out.println(
                 "\nREPORT:" +
                         "\nTests total: " + total +
                         "\nTests passed: " + passed +
-                        "\nTests failed: " + failed
+                        "\nTests failed: " + (total - passed)
         );
-        System.out.println("\nFailed tests:\n" + exceptions);
     }}
