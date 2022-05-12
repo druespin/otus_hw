@@ -1,0 +1,20 @@
+
+256         OutOfMemoryError
+512         spend msec:26697, sec:26
+1024        spend msec:24599, sec:24
+2048        spend msec:27984, sec:27
+4096        spend msec:25559, sec:25
+8192        spend msec:23378, sec:23
+16384       spend msec:23823, sec:23
+32768       spend msec:19985, sec:19
+65536       spend msec:28887, sec:28
+
+Data.class updated to int
+
+128         OutOfMemoryError
+256         spend msec:6572, sec:6
+512         spend msec:4640, sec:4
+1024        spend msec:4791, sec:4
+2048        spend msec:4058, sec:4
+4096        spend msec:4052, sec:4
+8192        spend msec:4125, sec:4
