@@ -6,10 +6,6 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Class<?> testClass = Class.forName("test_classes.AnnotationTest2");
-
-        if (TestRunner.invokeBeforeMethod(testClass)) {
-            TestRunner.invokeTestMethods(testClass);
-        }
-        TestRunner.invokeAfterMethod(testClass);
+        TestRunner.runTests(testClass);
     }
 }

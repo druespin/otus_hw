@@ -13,23 +13,22 @@ public class AnnotationTest2 {
 
     @Test
     public void test1() throws RuntimeException {
-        System.out.print("\nTest-1 in progress...");
+        System.out.print("Test-1 in progress...");
         throw new RuntimeException();
     }
 
     @Test
     public void test2() {
-        System.out.print("\nTest-2 in progress...");
+        System.out.print("Test-2 in progress...");
     }
 
     @Test
-    public void test3() throws NullPointerException {
-        System.out.print("\nTest-3 in progress...");
-        throw new NullPointerException();
+    public void test3() {
+        System.out.print("Test-3 in progress...");
     }
 
     @After
     public void tearDown() {
-        System.out.print("\nAfter test...\n");
+        System.out.print("After test...\n");
     }
 }

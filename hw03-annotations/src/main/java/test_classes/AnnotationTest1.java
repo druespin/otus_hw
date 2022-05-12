@@ -8,7 +8,7 @@ public class AnnotationTest1 {
 
     @Before
     public void setUp() throws NullPointerException {
-        System.out.print("\nBefore test...");
+        System.out.print("Before test...");
         throw new NullPointerException();
     }
 
@@ -22,7 +22,7 @@ public class AnnotationTest1 {
 
     @After
     public void tearDown() throws ClassNotFoundException{
-        System.out.print("\nAfter test...");
+        System.out.print("After test...");
         throw new ClassNotFoundException();
     }
 }
