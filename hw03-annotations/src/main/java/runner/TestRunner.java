@@ -39,8 +39,8 @@ public class TestRunner {
                     catch (Exception e) {
                         printException(e, method);
                     }
-                    invokeAfterMethod(testInstance);
                 }
+                invokeAfterMethod(testInstance);
             }
         }
         printStats(total, passed);
