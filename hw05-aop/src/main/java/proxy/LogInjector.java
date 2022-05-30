@@ -2,7 +2,6 @@ package proxy;
 
 import annotation.Log;
 import test.TestInterface;
-import test.TestLogging;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -10,8 +9,8 @@ import java.lang.reflect.Proxy;
 
 public class LogInjector {
 
-    public static TestInterface createTest() {
-        InvocationHandler handler = new LogInvocationHandler(new TestLogging());
+    public static TestInterface createTest(TestInterface testInterface) {
+        InvocationHandler handler = new LogInvocationHandler(testInterface);
         return (TestInterface) Proxy.newProxyInstance(LogInjector.class.getClassLoader(),
                 new Class<?>[]{TestInterface.class}, handler);
     }
@@ -29,9 +28,12 @@ public class LogInjector {
             var methodOfImpl = testInterface.getClass().getMethod(method.getName(), method.getParameterTypes());
             if (methodOfImpl.isAnnotationPresent(Log.class)) {
                 System.out.print("executed method: " + method.getName() + ", params: ");
-                for (Object arg : args) {
-                    System.out.print(arg + " ");
+                if (args != null) {
+                    for (Object arg : args) {
+                        System.out.print(arg + " ");
+                    }
                 }
+                else System.out.print("no params");
                 System.out.println();
             }
             return method.invoke(testInterface, args);
