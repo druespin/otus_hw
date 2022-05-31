@@ -18,14 +18,16 @@ public class LogInjector {
     static class LogInvocationHandler implements InvocationHandler {
 
         private final TestInterface testInterface;
+        private Class<?> aClass;
 
         LogInvocationHandler(TestInterface testInterface) {
             this.testInterface = testInterface;
+            this.aClass = testInterface.getClass();
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            var methodOfImpl = testInterface.getClass().getMethod(method.getName(), method.getParameterTypes());
+            var methodOfImpl = aClass.getMethod(method.getName(), method.getParameterTypes());
             if (methodOfImpl.isAnnotationPresent(Log.class)) {
                 System.out.print("executed method: " + method.getName() + ", params: ");
                 if (args != null) {
