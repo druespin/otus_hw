@@ -10,6 +10,7 @@ public class TestLogging implements TestInterface {
         System.out.println("completed 0\n");
     }
 
+    @Log
     @Override
     public void calculation(int param) {
         System.out.println("completed 1\n");
