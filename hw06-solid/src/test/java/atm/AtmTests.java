@@ -1,26 +1,70 @@
 package atm;
 
-import org.testng.annotations.Test;
+import cash.CashStorage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class AtmTests {
 
+    private final CashStorage cashStorage = new CashStorage();
+
     @Test
+    @DisplayName("Тест 1. Снятие денег")
     public void withdrawTest() {
-        Atm atm = new Atm(10, 10, 4, 5);
-        atm.withdrawCash(4900);
+
+        cashStorage.addCell(100, 20);
+        cashStorage.addCell(200, 10);
+        cashStorage.addCell(500, 10);
+        cashStorage.addCell(1000, 1);
+
+        Atm atm = new Atm(cashStorage);
+        atm.printBalance();
+
+        atm.withdrawFromAtm(3900);
+        atm.printBalance();
     }
 
     @Test
+    @DisplayName("Тест 2. Пополнение банкомата")
     public void rechargeTest() {
-        Atm atm = new Atm(0, 10, 0, 0);
-        atm.rechargeCell(atm.getCellByNominal(100), 10);
-        atm.rechargeCell(atm.getCellByNominal(500), 20);
-        atm.rechargeCell(atm.getCellByNominal(1000), 7);
+
+        cashStorage.addCell(100, 0);
+        cashStorage.addCell(200, 0);
+        cashStorage.addCell(500, 0);
+        cashStorage.addCell(1000, 0);
+
+        Atm atm = new Atm(cashStorage);
+        atm.printBalance();
+
+        atm.rechargeAtm(100, 10);
+        atm.rechargeAtm(500, 20);
+        atm.rechargeAtm(1000, 7);
+        atm.printBalance();
     }
 
     @Test
+    @DisplayName("Тест 3. Ошибка - недостаточно средств")
     public void outOfCashTest() {
-        Atm atm = new Atm(2, 0, 0, 1);
-        atm.withdrawCash(1200);
+
+        cashStorage.addCell(100, 2);
+        cashStorage.addCell(50, 10);
+
+        Atm atm = new Atm(cashStorage);
+        atm.printBalance();
+
+        atm.withdrawFromAtm(1000);
+    }
+
+    @Test
+    @DisplayName("Тест 3. Ошибка - нет банкнот нужного номинала")
+    public void noRequiredNominalTest() {
+
+        cashStorage.addCell(100, 2);
+        cashStorage.addCell(500, 10);
+
+        Atm atm = new Atm(cashStorage);
+        atm.printBalance();
+
+        atm.withdrawFromAtm(750);
     }
 }

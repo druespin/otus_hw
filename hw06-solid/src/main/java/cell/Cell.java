@@ -13,6 +13,11 @@ public class Cell implements ICell {
     }
 
     @Override
+    public int getNominal() {
+        return nominal;
+    }
+
+    @Override
     public int getCurrentAmount() {
         return currentAmount;
     }
@@ -20,20 +25,12 @@ public class Cell implements ICell {
     @Override
     public void recharge(int amount) {
         currentAmount = currentAmount + amount;
-        System.out.println("Добавлено " + amount + " банкнот");
-    }
-
-    @Override
-    public int getNominal() {
-        return nominal;
+        System.out.println("Добавлено " + amount + " банкнот номиналом " + this.getNominal());
     }
 
     @Override
     public void withdraw(int amount) {
         currentAmount = currentAmount - amount;
-        if (currentAmount < 0) {
-            throw new OutOfCashException("Закончились банкноты номиналом " + this.getNominal());
-        }
-        System.out.println("Снято " + amount + " номиналом " + nominal);
+        System.out.println("Снято " + amount + " банкнот номиналом " + nominal + "\n");
     }
 }

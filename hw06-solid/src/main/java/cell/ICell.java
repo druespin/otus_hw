@@ -6,7 +6,7 @@ public interface ICell {
 
     int getCurrentAmount();
 
-    void withdraw(int amount);
+    void withdraw(int noteAmount);
 
-    void recharge(int amount);
+    void recharge(int noteAmount);
 }

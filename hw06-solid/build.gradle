@@ -7,10 +7,13 @@ targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
-    testImplementation 'org.testng:testng:7.1.0'
-
+    testImplementation ('org.junit.jupiter:junit-jupiter-api')
+    testImplementation ('org.junit.jupiter:junit-jupiter-engine')
 }
 
 test {
-    useTestNG()
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }

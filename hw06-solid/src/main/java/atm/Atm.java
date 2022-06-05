@@ -1,87 +1,53 @@
 package atm;
 
-import cell.*;
+import cash.CashStorage;
+import exception.OutOfCashException;
+import nominal.NominalSet;
+
 
 public class Atm {
 
-    private final Cell cell100;
-    private final Cell cell200;
-    private final Cell cell500;
-    private final Cell cell1000;
+    private final CashStorage cashStorage;
+    private final NominalSet nominals;
 
-    public Atm(int amount100, int amount200, int amount500, int amount1000) {
-        this.cell100 = new Cell(100, amount100);
-        this.cell200 = new Cell(200, amount200);
-        this.cell500 = new Cell(500, amount500);
-        this.cell1000 = new Cell(1000, amount1000);
-        printBalance();
+    public Atm(CashStorage cashStorage) {
+        this.cashStorage = cashStorage;
+        this.nominals = new NominalSet(cashStorage.getCellNominals());
     }
 
-    // пополнение одной ячейки, где noteAmount - кол-во банконот
-    public void rechargeCell(ICell cell, int noteAmount) {
-        System.out.print("Пополнение ячейки номиналом " + cell.getNominal() + ": ");
-        cell.recharge(noteAmount);
-        printBalance();
+    public void rechargeAtm(int nominal, int amount) {
+        cashStorage.rechargeCell(cashStorage.getCellByNominal(nominal), amount);
     }
 
-    // снятие суммы денег = cashSum
-    public void withdrawCash(int cashSum) {
-        System.out.println("Снятие " + cashSum);
-        if (cashSum < 1000) {
-            withdrawCashUnder1000(cashSum);
+    public void withdrawFromAtm(int cashSum) {
+        if (cashSum > cashStorage.getAtmBalance()) {
+            throw new OutOfCashException("В банкомате недостаточно средств");
+        }
+
+        int maxNominal = nominals.getMaxNominal();
+        var maxCell = cashStorage.getCellByNominal(maxNominal);
+
+        int takenAmount;
+        if (maxCell.getCurrentAmount() >= cashSum / maxNominal) {
+            takenAmount = cashSum / maxNominal;
+            cashStorage.withdrawFromCell(maxCell, takenAmount);
         } else {
-            cell1000.withdraw(cashSum / 1000);
-            if (cashSum % 1000 > 0) {
-                withdrawCashUnder1000(cashSum % 1000);
-            }
+            takenAmount = maxCell.getCurrentAmount();
+            cashStorage.withdrawFromCell(maxCell, takenAmount);
         }
-        printBalance();
-    }
+        nominals.removeNominal(maxNominal);
 
-    private void withdrawCashUnder1000(int cashSum) {
-        switch (cashSum) {
-            case 100 -> cell100.withdraw(1);
-            case 200 -> cell200.withdraw(1);
-            case 300 -> {
-                cell100.withdraw(1);
-                cell200.withdraw(1);
-            }
-            case 400 -> cell200.withdraw(2);
-            case 500 -> cell500.withdraw(1);
-            case 600 -> cell200.withdraw(3);
-            case 700 -> {
-                cell200.withdraw(1);
-                cell500.withdraw(1);
-            }
-            case 800 -> cell200.withdraw(4);
-            case 900 -> {
-                cell500.withdraw(1);
-                cell200.withdraw(2);
+        int remainder = cashSum - takenAmount * maxNominal;
+        if (remainder != 0) {
+            if (nominals.getSize() == 0) {
+                throw new OutOfCashException("В банкомате нет банкнот номиналом " + remainder);
+            } else {
+                withdrawFromAtm(remainder);
             }
         }
     }
 
-    public Cell getCellByNominal(int nominal) {
-        return switch (nominal) {
-            case 100 -> cell100;
-            case 200 -> cell200;
-            case 500 -> cell500;
-            case 1000 -> cell1000;
-            default -> throw new IllegalStateException("Unexpected value: " + nominal);
-        };
-    }
-
-    private void printBalance() {
-        System.out.println("Баланс банкомата: \n" +
-                "1000 - " + cell1000.getCurrentAmount() + "\n" +
-                "500 - " + cell500.getCurrentAmount() + "\n" +
-                "200 - " + cell200.getCurrentAmount() + "\n" +
-                "100 - " + cell100.getCurrentAmount() + "\n" +
-                "Остаток: " + (100 * cell100.getCurrentAmount() +
-                                200 * cell200.getCurrentAmount() +
-                                500 * cell500.getCurrentAmount() +
-                                1000 * cell1000.getCurrentAmount() +
-                "\n--------")
-        );
+    public void printBalance() {
+        cashStorage.printBalance();
     }
 }
