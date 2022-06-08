@@ -20,7 +20,7 @@ public class AtmTests {
         Atm atm = new Atm(cashStorage);
         atm.printBalance();
 
-        atm.withdrawFromAtm(3900);
+        System.out.println("К выдаче " + atm.withdrawFromAtm(3900));
         atm.printBalance();
     }
 
@@ -56,7 +56,7 @@ public class AtmTests {
     }
 
     @Test
-    @DisplayName("Тест 3. Ошибка - нет банкнот нужного номинала")
+    @DisplayName("Тест 4. Ошибка - нет банкнот нужного номинала")
     public void noRequiredNominalTest() {
 
         cashStorage.addCell(100, 2);

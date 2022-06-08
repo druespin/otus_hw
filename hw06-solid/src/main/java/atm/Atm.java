@@ -19,8 +19,9 @@ public class Atm {
         cashStorage.rechargeCell(cashStorage.getCellByNominal(nominal), amount);
     }
 
-    public void withdrawFromAtm(int cashSum) {
-        if (cashSum > cashStorage.getAtmBalance()) {
+    public int withdrawFromAtm(int cashSum) {
+        int leftSum = cashSum;
+        if (leftSum > cashStorage.getAtmBalance()) {
             throw new OutOfCashException("В банкомате недостаточно средств");
         }
 
@@ -28,8 +29,8 @@ public class Atm {
         var maxCell = cashStorage.getCellByNominal(maxNominal);
 
         int takenAmount;
-        if (maxCell.getCurrentAmount() >= cashSum / maxNominal) {
-            takenAmount = cashSum / maxNominal;
+        if (maxCell.getCurrentAmount() >= leftSum / maxNominal) {
+            takenAmount = leftSum / maxNominal;
             cashStorage.withdrawFromCell(maxCell, takenAmount);
         } else {
             takenAmount = maxCell.getCurrentAmount();
@@ -37,7 +38,7 @@ public class Atm {
         }
         nominals.removeNominal(maxNominal);
 
-        int remainder = cashSum - takenAmount * maxNominal;
+        int remainder = leftSum - takenAmount * maxNominal;
         if (remainder != 0) {
             if (nominals.getSize() == 0) {
                 throw new OutOfCashException("В банкомате нет банкнот номиналом " + remainder);
@@ -45,6 +46,7 @@ public class Atm {
                 withdrawFromAtm(remainder);
             }
         }
+        return cashSum;
     }
 
     public void printBalance() {
