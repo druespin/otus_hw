@@ -1,10 +1,11 @@
 package ru.otus.dataprocessor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.Gson;
 import ru.otus.model.Measurement;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import java.util.List;
 public class ResourcesFileLoader implements Loader {
 
     private final URL resource;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final Gson gson = new Gson();
 
     public ResourcesFileLoader(String fileName) {
         this.resource = ClassLoader.getSystemResource(fileName);
@@ -26,8 +27,9 @@ public class ResourcesFileLoader implements Loader {
 
         try {
             String text = Files.readString(Path.of(resource.toURI()));
-            return mapper.readValue(text,
-                    TypeFactory.defaultInstance().constructCollectionType(List.class, Measurement.class));
+
+            Type listType = new TypeReference<List<Measurement>>() {}.getType();
+            return gson.fromJson(text, listType);
         }
         catch (IOException | URISyntaxException e) {
             e.printStackTrace();
