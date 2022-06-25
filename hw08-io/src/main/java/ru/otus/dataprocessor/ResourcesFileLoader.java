@@ -22,18 +22,10 @@ public class ResourcesFileLoader implements Loader {
     }
 
     @Override
-    public List<Measurement> load() {
+    public List<Measurement> load() throws URISyntaxException, IOException {
         //читает файл, парсит и возвращает результат
-
-        try {
-            String text = Files.readString(Path.of(resource.toURI()));
-
-            Type listType = new TypeReference<List<Measurement>>() {}.getType();
-            return gson.fromJson(text, listType);
-        }
-        catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
+        String text = Files.readString(Path.of(resource.toURI()));
+        Type listType = new TypeReference<List<Measurement>>() {}.getType();
+        return gson.fromJson(text, listType);
     }
 }
