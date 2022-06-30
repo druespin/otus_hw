@@ -3,7 +3,6 @@ package ru.otus.handler;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
 import ru.otus.listener.Listener;
 import ru.otus.processor.Processor;
@@ -30,10 +29,10 @@ class ComplexProcessorTest {
         //given
         var message = new Message.Builder(1L).field7("field7").build();
 
-        var processor1 = mock(ChangeFieldsProcessor.class);
+        var processor1 = mock(Processor.class);
         when(processor1.process(message)).thenReturn(message);
 
-        var processor2 = mock(EvenSecondProcessor.class);
+        var processor2 = mock(Processor.class);
         when(processor2.process(message)).thenReturn(message);
 
         var processors = List.of(processor1, processor2);
@@ -56,10 +55,10 @@ class ComplexProcessorTest {
         //given
         var message = new Message.Builder(1L).field8("field8").build();
 
-        var processor1 = mock(ChangeFieldsProcessor.class);
+        var processor1 = mock(Processor.class);
         when(processor1.process(message)).thenThrow(new RuntimeException("Test Exception"));
 
-        var processor2 = mock(EvenSecondProcessor.class);
+        var processor2 = mock(Processor.class);
         when(processor2.process(message)).thenReturn(message);
 
         var processors = List.of(processor1, processor2);
@@ -82,7 +81,7 @@ class ComplexProcessorTest {
         //given
         var message = new Message.Builder(1L).field9("field9").build();
 
-        var listener = mock(HistoryListener.class);
+        var listener = mock(Listener.class);
 
         var complexProcessor = new ComplexProcessor(new ArrayList<>(), (ex) -> {
         });

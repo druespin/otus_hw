@@ -7,7 +7,6 @@ import ru.otus.handler.ComplexProcessor;
 import ru.otus.model.Message;
 import ru.otus.processor.homework.EvenSecondProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeWork {
