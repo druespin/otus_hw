@@ -29,8 +29,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Constructor<T> getConstructor() throws NoSuchMethodException {
-        var fieldClasses = fieldsList.stream().map(Field::getType).toArray(Class<?>[]::new);
-        return tClass.getConstructor(fieldClasses);
+        return tClass.getConstructor();
     }
 
     @Override

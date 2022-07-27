@@ -34,13 +34,14 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 rs -> {
                     try {
                         if (rs.next()) {
-                            var columnValues = new ArrayList<>();
+                            var entityInstance = entityClassMetaData.getConstructor().newInstance();
                             for (Field field : entityClassMetaData.getAllFields()) {
                                 var columnIndex = rs.findColumn(field.getName());
                                 var value = rs.getObject(columnIndex);
-                                columnValues.add(value);
+                                field.setAccessible(true);
+                                field.set(entityInstance, value);
                             }
-                            return entityClassMetaData.getConstructor().newInstance(columnValues.toArray());
+                            return entityInstance;
                         }
                     } catch (SQLException | InstantiationException | IllegalAccessException
                             | InvocationTargetException | NoSuchMethodException e) {
