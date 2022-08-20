@@ -20,7 +20,7 @@ public class Client implements Cloneable {
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "client")
-    private final List<Phone> phones = new ArrayList<>();
+    private List<Phone> phones = new ArrayList<>();
 
     public Client() {
     }
@@ -47,7 +47,19 @@ public class Client implements Cloneable {
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name, this.address, this.phones);
+        var newClient = new Client(this.id, this.name);
+        var newAddress = new Address(this.address.getId(), this.address.getStreet());
+        newClient.setAddress(newAddress);
+
+        List<Phone> newPhones = this.phones.stream()
+                .map(phone -> {
+                    var newPhone = new Phone(phone.getId(), phone.getNumber());
+                    newPhone.setClient(newClient);
+                    return newPhone;
+                })
+                .toList();
+        newClient.setPhones(newPhones);
+        return newClient;
     }
 
     public Long getId() {
@@ -64,6 +76,14 @@ public class Client implements Cloneable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
     }
 
     @Override
