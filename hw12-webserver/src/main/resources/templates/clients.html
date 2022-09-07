@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Clients</title>
+    <script>
+        function saveClient() {
+            const clientNameTextBox = document.getElementById('clientNameTextBox');
+            const clientAddressTextBox = document.getElementById('clientAddressTextBox');
+            const clientPhoneTextBox = document.getElementById('clientPhoneTextBox');
+
+         //   const userDataContainer = document.getElementById('userDataContainer');
+
+            const name = clientNameTextBox.value;
+            const address = clientAddressTextBox.value;
+            const phone = clientPhoneTextBox.value;
+
+            var payload = {
+                            name: name,
+                            address: { street: address },
+                            phone: { number: phone }
+                          }
+
+            fetch('api/client/post',
+            {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+        }
+    </script>
+    <script>
+        function getAllClients() {
+
+            fetch('/clients')
+                .then(response => response.json());
+            document.location.reload();
+        }
+    </script>
+</head>
+
+<body>
+<h4>Создать нового клиента</h4>
+    <input type="text" id = "clientNameTextBox" placeholder="имя">
+    <input type="text" id = "clientAddressTextBox" placeholder="адрес">
+    <input type="text" id = "clientPhoneTextBox" placeholder="телефон">
+    <button onclick="saveClient()">Сохранить</button>
+
+<h4>Список клиентов</h4>
+<button onclick="getAllClients()">Получить список</button>
+
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Name</td>
+        <td style="width: 100px">Address</td>
+        <td style="width: 100px">Phone</td>
+    </tr>
+    </thead>
+    <tbody>
+
+    <#list clients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td>${client.address.street}</td>
+            <td>${client.phone.number}</td>
+        </tr>
+    </#list>
+
+    </tbody>
+</table>
+</body>
+</html>
