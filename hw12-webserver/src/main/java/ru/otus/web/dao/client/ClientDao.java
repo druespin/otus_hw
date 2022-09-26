@@ -1,6 +1,6 @@
 package ru.otus.web.dao.client;
 
-import ru.otus.database.crm.model.Client;
+import ru.otus.model.Client;
 
 import java.util.List;
 

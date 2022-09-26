@@ -5,7 +5,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.otus.database.crm.model.Client;
+import ru.otus.model.Client;
 import ru.otus.web.dao.client.ClientDao;
 
 import java.io.IOException;
