@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 public class ThreadTask {
 
     private static final Logger logger = LoggerFactory.getLogger(ThreadTask.class);
+    private String last = "t2";
 
     public static void main(String[] args) {
         var task = new ThreadTask();
@@ -16,8 +17,6 @@ public class ThreadTask {
     private void go() {
         var t1 = new NewThread("t1");
         var t2 = new NewThread("t2");
-
-        t1.setPriority(Thread.MAX_PRIORITY);
 
         t1.start();
         t2.start();
@@ -33,17 +32,15 @@ public class ThreadTask {
     }
 
     private void workInThread(String name, int i) {
-        Thread.interrupted();
         try {
-            this.notify();
-            logger.info(name + "-" + i);
-            this.wait();
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // в случае прерывания текущего потока другим потоком путем notify флаг interrupted не переключается
-            if (!Thread.interrupted()) {
-                logger.error("Spurious wakeup");
+            while (last.equals(name)) {
+                this.wait();
             }
+            logger.info(name + "-" + i);
+            last = name;
+            Thread.sleep(500);
+            this.notify();
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
@@ -58,7 +55,7 @@ public class ThreadTask {
 
         @Override
         public void run() {
-            while (true) {
+            while (!Thread.interrupted()) {
                 printSequences(name);
             }
         }
