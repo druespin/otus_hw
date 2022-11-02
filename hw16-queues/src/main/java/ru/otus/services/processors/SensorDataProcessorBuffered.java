@@ -6,10 +6,8 @@ import ru.otus.lib.SensorDataBufferedWriter;
 import ru.otus.api.SensorDataProcessor;
 import ru.otus.api.model.SensorData;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 // Этот класс нужно реализовать
@@ -18,11 +16,13 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
-    private final List<SensorData> dataBuffer = new CopyOnWriteArrayList<>();
+    private final ArrayBlockingQueue<SensorData> queue;
+    private final List<SensorData> bufferedData = new CopyOnWriteArrayList<>();
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
         this.writer = writer;
+        this.queue = new ArrayBlockingQueue(bufferSize, true);
     }
 
     @Override
@@ -30,27 +30,21 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
         if (data.getValue() == null || data.getValue().isNaN()) {
             return;
         }
-        if (dataBuffer.size() < bufferSize) {
-            dataBuffer.add(data);
-        }
-        if (dataBuffer.size() == bufferSize) {
+        if (queue.size() == bufferSize) {
             flush();
-            dataBuffer.clear();
         }
+        queue.offer(data);
     }
 
-    public void flush() {
+    public synchronized void flush() {
         try {
-            dataBuffer.sort(Comparator.comparing(SensorData::getMeasurementTime));
-            var bufferedData = List.copyOf(dataBuffer);
-
-            synchronized (writer) {
-                if (bufferedData.size() < bufferSize - 1 && bufferedData.size() != bufferSize / 2) {
-                    Thread.currentThread().wait();
-                }
+            bufferedData.clear();
+            queue.drainTo(bufferedData);
+            bufferedData.sort(Comparator.comparing(SensorData::getMeasurementTime));
+            if (bufferedData.size() > 0) {
                 writer.writeBufferedData(bufferedData);
-                Thread.currentThread().join(200);
             }
+            queue.clear();
         }
         catch (Exception e) {
             log.error("Ошибка в процессе записи буфера", e);
