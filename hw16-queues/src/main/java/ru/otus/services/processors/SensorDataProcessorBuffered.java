@@ -17,7 +17,6 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
     private final ArrayBlockingQueue<SensorData> queue;
-    private final List<SensorData> bufferedData = new CopyOnWriteArrayList<>();
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
@@ -38,10 +37,10 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     public synchronized void flush() {
         try {
-            bufferedData.clear();
+            List<SensorData> bufferedData = new CopyOnWriteArrayList<>();
             queue.drainTo(bufferedData);
             bufferedData.sort(Comparator.comparing(SensorData::getMeasurementTime));
-            if (bufferedData.size() > 0) {
+            if (!bufferedData.isEmpty()) {
                 writer.writeBufferedData(bufferedData);
             }
             queue.clear();
